@@ -1,0 +1,1 @@
+# ngrx-standalone-workshop
