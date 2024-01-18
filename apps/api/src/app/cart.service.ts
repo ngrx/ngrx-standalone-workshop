@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { CartItem } from '@angular-monorepo/api-interfaces';
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { CartItem } from "@angular-monorepo/api-interfaces";
 
 @Injectable()
 export class CartService {
@@ -10,6 +10,9 @@ export class CartService {
   }
 
   addProduct(id: string): CartItem[] {
+    if (Math.random() < 0.25) {
+      throw new HttpException("cart failed", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     const item = this.getItem(id);
     if (item) {
       item.quantity += 1;

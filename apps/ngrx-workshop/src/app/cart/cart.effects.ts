@@ -1,9 +1,10 @@
-import { catchError, map, of, switchMap, timer } from "rxjs";
+import { catchError, map, mergeMap, of, switchMap, timer } from "rxjs";
 import { cartDetailsActions } from "./cart-details/actions";
 import { Actions, createEffect, ofType } from "@ngrx/effects";
 import { cartActions } from "./actions";
 import { inject } from "@angular/core";
 import { CartService } from "./cart.service";
+import { productDetailsActions } from "../product/product-details/actions";
 
 const REFRESH_CART_ITEMS_INTERVAL_MS = 20 * 1000; // 20 seconds
 
@@ -23,6 +24,30 @@ export const fetchCartItems = createEffect(
             of(
               cartActions.fetchCartItemsError({
                 errorMessage: "Error Fetching Cart Items",
+              })
+            )
+          )
+        )
+      )
+    );
+  },
+  { functional: true }
+);
+
+export const addProductToCart = createEffect(
+  () => {
+    const cartService = inject(CartService);
+    return inject(Actions).pipe(
+      ofType(productDetailsActions.addToCart),
+      mergeMap(({ productId }) =>
+        cartService.addProduct(productId).pipe(
+          map(() => cartActions.addToCartSuccess()),
+          // passing the productId to the Error, so it can be restored
+          catchError(() =>
+            of(
+              cartActions.addToCartError({
+                productId,
+                errorMessage: "Error Adding To Cart",
               })
             )
           )

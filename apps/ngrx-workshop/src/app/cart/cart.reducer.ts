@@ -41,5 +41,22 @@ export const cartReducer = createReducer(
   on(cartActions.fetchCartItemsSuccess, (state, { cartItems }) => ({
     ...state,
     cartItems: [...cartItems],
-  }))
+  })),
+  on(cartActions.addToCartError, (state, { productId }) => {
+    const cartItemsClone = state.cartItems ? [...state.cartItems] : [];
+    const cartItemIndex = cartItemsClone.findIndex(
+      (cartItem) => cartItem.productId === productId
+    );
+    if (cartItemIndex > -1) {
+      // Replace item with an item that has updated quantity
+      cartItemsClone.splice(cartItemIndex, 1, {
+        productId,
+        quantity: cartItemsClone[cartItemIndex].quantity - 1,
+      });
+    }
+    return {
+      ...state,
+      cartItems: cartItemsClone,
+    };
+  })
 );
