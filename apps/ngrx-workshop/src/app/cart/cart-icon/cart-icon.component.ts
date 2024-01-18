@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from "@angular/core";
-import { map } from "rxjs";
+import { Store } from "@ngrx/store";
+import { selectCartItemsCount } from "../cart.selectors";
 
 import { CartService } from "../cart.service";
 import { MatIconModule } from "@angular/material/icon";
@@ -21,13 +22,12 @@ import { AsyncPipe } from "@angular/common";
   `,
 })
 export class CartIconComponent {
-  cartItemsCounter$ = this.cartService.cartItems$.pipe(
-    map((cartItems) =>
-      cartItems.reduce((acc, { quantity }) => acc + quantity, 0)
-    )
-  );
+  cartItemsCounter$ = this.store.select(selectCartItemsCount);
 
-  constructor(private readonly cartService: CartService) {
+  constructor(
+    private readonly cartService: CartService,
+    private readonly store: Store
+  ) {
     this.cartService.getCartProducts();
   }
 }
