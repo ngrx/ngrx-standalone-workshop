@@ -1,0 +1,18 @@
+@if (products$ | async; as products) {
+  <div class="products-container">
+    @for (product of products; track product) {
+      <a class="card-link" [routerLink]="['/details', product.id]">
+        <mat-card>
+          <mat-card-title>{{ product.title }}</mat-card-title>
+          <img class="thumbnail" [src]="product.url" />
+          <ngrx-workshop-stars
+            [rating]="product.rating"
+            [rated]="(customerRatings$ | async)?.[product.id]"
+          ></ngrx-workshop-stars>
+        </mat-card>
+      </a>
+    }
+  </div>
+} @else {
+  <ngrx-workshop-spinner></ngrx-workshop-spinner>
+}

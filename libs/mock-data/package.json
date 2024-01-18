@@ -1,0 +1,7 @@
+{
+  "name": "@angular-monorepo/mock-data",
+  "version": "0.0.1",
+  "dependencies": {},
+  "type": "commonjs",
+  "main": "./index.cjs"
+}

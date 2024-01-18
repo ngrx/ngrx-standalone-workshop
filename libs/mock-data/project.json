@@ -1,0 +1,25 @@
+{
+  "name": "mock-data",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/mock-data/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/mock-data",
+        "main": "libs/mock-data/src/index.ts",
+        "tsConfig": "libs/mock-data/tsconfig.lib.json",
+        "assets": ["libs/mock-data/*.md"],
+        "generatePackageJson": true,
+        "format": ["cjs"]
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"]
+    }
+  },
+  "tags": []
+}
