@@ -12,6 +12,8 @@ import * as errorEffects from "./app/error.effects";
 import * as cartEffects from "./app/cart/cart.effects";
 import { provideEffects } from "@ngrx/effects";
 import { CART_FEATURE_KEY, cartReducer } from "./app/cart/cart.reducer";
+import { ROUTER_FEATURE_KEY } from "./app/router/router.selectors";
+import { provideRouterStore, routerReducer } from "@ngrx/router-store";
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -21,6 +23,8 @@ bootstrapApplication(AppComponent, {
     provideStore({ product: productsReducer }),
     provideEffects(ProductEffects, errorEffects, cartEffects),
     provideState(CART_FEATURE_KEY, cartReducer),
+    provideState(ROUTER_FEATURE_KEY, routerReducer),
+    provideRouterStore(),
     provideStoreDevtools(),
   ],
 });
