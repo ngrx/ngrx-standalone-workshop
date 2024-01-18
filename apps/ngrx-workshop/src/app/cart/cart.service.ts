@@ -1,10 +1,10 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { BehaviorSubject, Observable } from "rxjs";
 
-import { HttpClient } from '@angular/common/http';
-import { CartItem } from '@angular-monorepo/api-interfaces';
+import { HttpClient } from "@angular/common/http";
+import { CartItem } from "@angular-monorepo/api-interfaces";
 
-@Injectable({ providedIn: 'root' })
+@Injectable({ providedIn: "root" })
 export class CartService {
   private cartItemsSubject$ = new BehaviorSubject<CartItem[]>([]);
   cartItems$ = this.cartItemsSubject$.asObservable();
@@ -29,10 +29,8 @@ export class CartService {
       .subscribe((arr) => this.cartItemsSubject$.next(arr));
   }
 
-  getCartProducts(): void {
-    this.http
-      .get<CartItem[]>(`/api/cart/cart-content`)
-      .subscribe((arr) => this.cartItemsSubject$.next(arr));
+  getCartProducts(): Observable<CartItem[]> {
+    return this.http.get<CartItem[]>(`/api/cart/cart-content`);
   }
 
   purchase(purchaseItems: CartItem[]): Observable<boolean> {

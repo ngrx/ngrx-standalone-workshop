@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { selectCartItemsCount } from "../cart.selectors";
 
-import { CartService } from "../cart.service";
 import { MatIconModule } from "@angular/material/icon";
 import { MatButtonModule } from "@angular/material/button";
 import { RouterLink } from "@angular/router";
@@ -24,10 +23,5 @@ import { AsyncPipe } from "@angular/common";
 export class CartIconComponent {
   cartItemsCounter$ = this.store.select(selectCartItemsCount);
 
-  constructor(
-    private readonly cartService: CartService,
-    private readonly store: Store
-  ) {
-    this.cartService.getCartProducts();
-  }
+  constructor(private readonly store: Store) {}
 }
