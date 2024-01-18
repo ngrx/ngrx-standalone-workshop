@@ -5,12 +5,15 @@ import { Rating } from "@angular-monorepo/api-interfaces";
 import { RatingService } from "../rating.service";
 
 import { ProductModel } from "../../model/product";
-import { ProductService } from "../product.service";
 import { StarsComponent } from "../../common/stars/stars.component";
 import { SpinnerComponent } from "../../common/spinner/spinner.component";
 import { RouterLink } from "@angular/router";
 import { MatCardModule } from "@angular/material/card";
 import { AsyncPipe, CommonModule } from "@angular/common";
+import { Store } from "@ngrx/store";
+import { GlobalState } from "../product.reducer";
+import { selectProducts } from "../product.selectors";
+import * as actions from "./actions";
 
 @Component({
   selector: "ngrx-workshop-home",
@@ -26,17 +29,18 @@ import { AsyncPipe, CommonModule } from "@angular/common";
   ],
 })
 export class ProductListComponent implements OnInit {
-  products$?: Observable<ProductModel[]>;
+  products$?: Observable<ProductModel[] | undefined> =
+    this.store.select(selectProducts);
   customerRatings$?: Observable<{ [productId: string]: Rating }>;
 
   constructor(
-    private readonly productService: ProductService,
+    private readonly store: Store<GlobalState>,
     private readonly ratingService: RatingService
-  ) {}
+  ) {
+    this.store.dispatch(actions.productsOpened());
+  }
 
   ngOnInit() {
-    this.products$ = this.productService.getProducts();
-
     this.customerRatings$ = this.ratingService.getRatings().pipe(
       map((ratingsArray) =>
         // Convert from Array to Indexable.
