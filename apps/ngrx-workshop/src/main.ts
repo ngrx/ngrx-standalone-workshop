@@ -7,6 +7,9 @@ import { provideAnimations } from "@angular/platform-browser/animations";
 import { provideStore } from "@ngrx/store";
 import { provideStoreDevtools } from "@ngrx/store-devtools";
 import { productsReducer } from "./app/product/product.reducer";
+import { ProductEffects } from "./app/product/product.effects";
+import * as errorEffects from "./app/error.effects";
+import { provideEffects } from "@ngrx/effects";
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -14,6 +17,7 @@ bootstrapApplication(AppComponent, {
     provideHttpClient(),
     provideAnimations(),
     provideStore({ product: productsReducer }),
+    provideEffects(ProductEffects, errorEffects),
     provideStoreDevtools(),
   ],
 });
