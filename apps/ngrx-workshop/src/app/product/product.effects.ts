@@ -74,7 +74,7 @@ export class ProductEffects {
 
   fetchCartDetailsProducts$ = createEffect(() => {
     return this.actions$.pipe(
-      ofType(cartActions.fetchCartItemsSuccess),
+      ofType(cartActions.fetchCartItemsWithDetailsSuccess),
       switchMap(({ cartItems }) =>
         from(cartItems).pipe(
           mergeMap(({ productId }) =>

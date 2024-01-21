@@ -3,60 +3,60 @@ import { createReducer, on } from "@ngrx/store";
 import { productDetailsActions } from "../product/product-details/actions";
 import { CartItem } from "@angular-monorepo/api-interfaces";
 import { cartActions } from "./actions";
+import { EntityState, createEntityAdapter } from "@ngrx/entity";
 
 export const CART_FEATURE_KEY = "cart";
 
 export interface CartState {
-  cartItems?: CartItem[];
+  cartItems: EntityState<CartItem>;
 }
 
+export const cartAdapter = createEntityAdapter<CartItem>({
+  selectId: (cartItem) => cartItem.productId,
+});
+
 export const initialState: CartState = {
-  cartItems: undefined,
+  cartItems: cartAdapter.getInitialState(),
 };
 
 export const cartReducer = createReducer(
   initialState,
   on(productDetailsActions.addToCart, (state, { productId }) => {
-    const cartItemsClone = state.cartItems ? [...state.cartItems] : [];
-    const cartItemIndex = cartItemsClone.findIndex(
-      (cartItem) => cartItem.productId === productId
-    );
-    if (cartItemIndex < 0) {
-      cartItemsClone.push({
-        productId,
-        quantity: 1,
-      });
-    } else {
-      // Replace item with an item that has updated quantity
-      cartItemsClone.splice(cartItemIndex, 1, {
-        productId,
-        quantity: cartItemsClone[cartItemIndex].quantity + 1,
-      });
-    }
+    const currentQuantity =
+      cartAdapter.getSelectors().selectEntities(state.cartItems)[productId]
+        ?.quantity || 0;
     return {
       ...state,
-      cartItems: cartItemsClone,
+      cartItems: cartAdapter.upsertOne(
+        {
+          productId,
+          quantity: currentQuantity + 1,
+        },
+        state.cartItems
+      ),
     };
   }),
   on(cartActions.fetchCartItemsSuccess, (state, { cartItems }) => ({
     ...state,
-    cartItems: [...cartItems],
+    cartItems: cartAdapter.upsertMany(cartItems, state.cartItems),
   })),
   on(cartActions.addToCartError, (state, { productId }) => {
-    const cartItemsClone = state.cartItems ? [...state.cartItems] : [];
-    const cartItemIndex = cartItemsClone.findIndex(
-      (cartItem) => cartItem.productId === productId
-    );
-    if (cartItemIndex > -1) {
-      // Replace item with an item that has updated quantity
-      cartItemsClone.splice(cartItemIndex, 1, {
-        productId,
-        quantity: cartItemsClone[cartItemIndex].quantity - 1,
-      });
-    }
+    const currentQuantity =
+      cartAdapter.getSelectors().selectEntities(state.cartItems)[productId]
+        ?.quantity || 1;
     return {
       ...state,
-      cartItems: cartItemsClone,
+      cartItems: cartAdapter.upsertOne(
+        {
+          productId,
+          quantity: currentQuantity - 1,
+        },
+        state.cartItems
+      ),
     };
-  })
+  }),
+  on(cartActions.purchaseSuccess, (state) => ({
+    ...state,
+    cartItems: cartAdapter.removeAll(state.cartItems),
+  }))
 );

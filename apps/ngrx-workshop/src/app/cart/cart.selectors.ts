@@ -1,13 +1,20 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { CartState, CART_FEATURE_KEY } from "./cart.reducer";
+import { CartState, CART_FEATURE_KEY, cartAdapter } from "./cart.reducer";
 import { selectProducts } from "../product/product.selectors";
 import { CartProduct } from "../model/product";
 
 export const cartFeature = createFeatureSelector<CartState>(CART_FEATURE_KEY);
 
-export const selectCartItems = createSelector(
+const { selectAll } = cartAdapter.getSelectors();
+
+export const selectCartItemsEntities = createSelector(
   cartFeature,
   (state) => state.cartItems
+);
+
+export const selectCartItems = createSelector(
+  selectCartItemsEntities,
+  selectAll
 );
 
 export const selectCartItemsCount = createSelector(
