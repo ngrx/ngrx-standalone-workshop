@@ -1,7 +1,19 @@
-@if (products$ | async; as products) {
+@if (productListVm$ | async; as vm) {
+  @if (vm.productsRequestStatus === 'pending') {
+    @if (vm.products.length) {
+      <mat-progress-bar
+        mode="indeterminate"
+      ></mat-progress-bar>
+    } @else {
+      <ngrx-workshop-spinner></ngrx-workshop-spinner>
+    }
+  }
   <div class="products-container">
-    @for (product of products; track product) {
-      <a class="card-link" [routerLink]="['/details', product.id]">
+    @for (product of vm.products; track product) {
+      <a
+        class="card-link"
+        [routerLink]="['/details', product.id]"
+        >
         <mat-card>
           <mat-card-title>{{ product.title }}</mat-card-title>
           <img class="thumbnail" [src]="product.url" />
@@ -13,6 +25,4 @@
       </a>
     }
   </div>
-} @else {
-  <ngrx-workshop-spinner></ngrx-workshop-spinner>
 }

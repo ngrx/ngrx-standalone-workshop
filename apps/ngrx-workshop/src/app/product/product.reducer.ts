@@ -2,9 +2,12 @@ import { createEntityAdapter, EntityAdapter, EntityState } from "@ngrx/entity";
 import { createFeature, createReducer, on } from "@ngrx/store";
 import { ProductModel } from "../model/product";
 import { productApiActions } from "./actions";
+import { LoadingState, RequestStatus } from "../shared/request-status";
+import { productsOpened } from "./product-list/actions";
 
 interface ProductState {
   products: EntityState<ProductModel>;
+  productsRequestStatus: RequestStatus;
 }
 
 // If your entity's id property is different you can specify it during
@@ -14,18 +17,25 @@ export const productAdapter: EntityAdapter<ProductModel> =
 
 const initState: ProductState = {
   products: productAdapter.getInitialState(),
+  productsRequestStatus: LoadingState.IDLE,
 };
 
 export const productFeature = createFeature({
   name: "product",
   reducer: createReducer(
     initState,
+    on(productsOpened, (state) => ({
+      ...state,
+      productsRequestStatus: LoadingState.PENDING,
+    })),
     on(productApiActions.productsFetchedSuccess, (state, { products }) => ({
       ...state,
       products: productAdapter.upsertMany(products, state.products),
+      productsRequestStatus: LoadingState.FULFILLED,
     })),
-    on(productApiActions.productsFetchedError, (state) => ({
+    on(productApiActions.productsFetchedError, (state, { errorMessage }) => ({
       ...state,
+      productsRequestStatus: { errorMessage },
     })),
     on(productApiActions.singleProductFetchedSuccess, (state, { product }) => ({
       ...state,
