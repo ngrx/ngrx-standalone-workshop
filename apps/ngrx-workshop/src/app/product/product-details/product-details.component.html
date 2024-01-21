@@ -38,9 +38,8 @@
       </mat-card-actions>
     </mat-card>
   }
-  @if (vm.product; as product) {
-    <ngrx-workshop-reviews [productId]="product.id" />
-  }
+
+  <ngrx-workshop-reviews />
 } @else {
   <ngrx-workshop-spinner></ngrx-workshop-spinner>
 }

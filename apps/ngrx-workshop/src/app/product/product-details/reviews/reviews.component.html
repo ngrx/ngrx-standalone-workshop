@@ -5,7 +5,7 @@
   <mat-card-content>
     <form
       #reviewForm="ngForm"
-      (ngSubmit)="submit(reviewForm.value)"
+      (ngSubmit)="reviewsStore.submit(reviewForm.value)"
       [class.hide]="reviewForm.submitted"
     >
       <mat-form-field appearance="fill">
@@ -46,7 +46,7 @@
 
 <h2>Reviews</h2>
 
-@for (review of reviews$ | async; track review) {
+@for (review of reviewsStore.sortedReviews(); track review) {
   <mat-card class="review">
     <mat-card-title>{{ review.reviewer }}</mat-card-title>
     <mat-card-content>"{{ review.reviewText }}"</mat-card-content>

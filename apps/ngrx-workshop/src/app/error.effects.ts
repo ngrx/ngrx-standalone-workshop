@@ -5,6 +5,7 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { productApiActions, ratingApiActions } from "./product/actions";
 import { inject } from "@angular/core";
 import { cartActions } from "./cart/actions";
+import { reviewActions } from "./product/product-details/reviews/actions";
 
 export const handleFetchErrors = createEffect(
   (actions$ = inject(Actions), snackBar = inject(MatSnackBar)) => {
@@ -19,7 +20,10 @@ export const handleFetchErrors = createEffect(
         cartActions.removeProductError,
         ratingApiActions.ratingsFetchedError,
         ratingApiActions.getRatingError,
-        ratingApiActions.setRatingError
+        ratingApiActions.setRatingError,
+        ratingApiActions.setRatingError,
+        reviewActions.reviewFetchError,
+        reviewActions.submitReviewError
       ),
       tap(({ errorMessage }) => {
         snackBar.open(errorMessage, "Error", {
